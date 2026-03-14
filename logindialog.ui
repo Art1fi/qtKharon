@@ -163,6 +163,26 @@
         </layout>
        </item>
        <item>
+        <widget class="QLabel" name="dbNameHintLabel">
+         <property name="text">
+          <string>Имя базы данных:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="dbNameField">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>38</height>
+          </size>
+         </property>
+         <property name="placeholderText">
+          <string>Например: work_vault</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="passwordHintLabel">
          <property name="text">
           <string>Введите пароль:</string>
