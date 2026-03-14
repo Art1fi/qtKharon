@@ -1,0 +1,92 @@
+#include "databasemanager.h"
+#include <QtSql/QSqlQuery>
+#include <QtSql/QSqlError>
+#include <QDebug>
+
+DatabaseManager::DatabaseManager() {}
+
+bool DatabaseManager::openDatabase(const QString &path, const QString &password) {
+    // 1. Инициализируем драйвер SQLite
+    main = QSqlDatabase::addDatabase("SQLITECIPHER");
+    main.setDatabaseName(path);
+
+    // 2. Пытаемся открыть файл
+    if (!main.open()) {
+        qDebug() << "Ошибка открытия файла:" << main.lastError().text();
+        return false;
+    }
+
+    // 3. Устанавливаем ключ шифрования (SQLCipher)
+    // Мы создаем объект запроса и выполняем PRAGMA key
+    QSqlQuery query;
+    if (!query.exec("PRAGMA key = '" + password + "';")) {
+        qDebug() << "Ошибка установки ключа:" << query.lastError().text();
+        return false;
+    }
+
+    // 4. Создаем таблицу, если её еще нет
+    // Это сработает только если ключ подошел и база расшифровалась
+    QString createTable = "CREATE TABLE IF NOT EXISTS passwords ("
+                          "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                          "title TEXT, "
+                          "login TEXT, "
+                          "password TEXT, "
+                          "url TEXT, "
+                          "notes TEXT)";
+
+    if (!query.exec(createTable)) {
+        qDebug() << "Ошибка создания таблицы (возможно, неверный пароль):" << query.lastError().text();
+        return false;
+    }
+    // Попробуем прочитать что-то из таблицы, чтобы проверить пароль
+    if (!query.exec("SELECT count(*) FROM passwords")) {
+        qDebug() << "Ошибка: Скорее всего, введен неверный пароль!";
+        main.close();
+        return false;
+    }
+
+    return true;
+}
+
+bool DatabaseManager::addEntry(const DatabaseManager::PasswordEntry &entry) {
+    QSqlQuery query;
+
+    query.prepare("INSERT INTO passwords (title, login, password, url, notes) "
+                  "VALUES (:title, :login, :password, :url, :notes)");
+    query.bindValue(":title", entry.title);
+    query.bindValue(":login", entry.login);
+    query.bindValue(":password", entry.password);
+    query.bindValue(":url", entry.url);
+    query.bindValue(":notes", entry.notes);
+
+    return query.exec();
+}
+
+QList<DatabaseManager::PasswordEntry> DatabaseManager::getAllEntries() {
+    QList<DatabaseManager::PasswordEntry> list;
+    QSqlQuery query;
+
+    query.exec("SELECT * FROM passwords");
+    while(query.next()) {
+        DatabaseManager::PasswordEntry entry;
+        entry.id = query.value("id").toInt();
+        entry.password = query.value("password").toString();
+        entry.login = query.value("login").toString();
+        entry.url = query.value("url").toString();
+        entry.notes = query.value("notes").toString();
+        entry.title = query.value("title").toString();
+
+        list.append(entry);
+    }
+
+    return list;
+}
+
+bool DatabaseManager::deleteEntry(int id) {
+    QSqlQuery query;
+
+    query.prepare("DELETE FROM passwords WHERE id = :id");
+    query.bindValue(":id", id);
+
+    return query.exec();
+}
