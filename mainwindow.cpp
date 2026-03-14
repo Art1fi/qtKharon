@@ -1,8 +1,12 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "addentrydialog.h"
-#include <QMessageBox>
+
+#include <QAbstractItemView>
+#include <QApplication>
 #include <QClipboard>
+#include <QHeaderView>
+#include <QMessageBox>
 #include <QTimer>
 
 MainWindow::MainWindow(DatabaseManager *dbManager, QWidget *parent)
@@ -11,6 +15,20 @@ MainWindow::MainWindow(DatabaseManager *dbManager, QWidget *parent)
     , db(dbManager)
 {
     ui->setupUi(this);
+
+    ui->mainTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
+    ui->mainTable->setSelectionBehavior(QAbstractItemView::SelectRows);
+    ui->mainTable->setSelectionMode(QAbstractItemView::SingleSelection);
+    ui->mainTable->setFocusPolicy(Qt::NoFocus);
+    ui->mainTable->setAlternatingRowColors(true);
+
+    ui->mainTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
+    ui->mainTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
+    ui->mainTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
+    ui->mainTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    ui->mainTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    ui->mainTable->verticalHeader()->setDefaultSectionSize(38);
+
     refreshTable();
 }
 
@@ -30,11 +48,10 @@ void MainWindow::refreshTable() {
     for (const auto &e : list) {
         ui->mainTable->setItem(row, 0, new QTableWidgetItem(e.title));
         ui->mainTable->setItem(row, 1, new QTableWidgetItem(e.login));
-        ui->mainTable->setItem(row, 2, new QTableWidgetItem("********")); // Скрываем пароль
+        ui->mainTable->setItem(row, 2, new QTableWidgetItem("********"));
         ui->mainTable->setItem(row, 3, new QTableWidgetItem(e.url));
         ui->mainTable->setItem(row, 4, new QTableWidgetItem(e.notes));
         ui->mainTable->setItem(row, 5, new QTableWidgetItem(QString::number(e.id)));
-
         row++;
     }
 }
@@ -48,12 +65,9 @@ void MainWindow::on_addButton_clicked()
 
         if (db->addEntry(newEntry)) {
             refreshTable();
-        } else {
-            // Тут можно вывести QMessageBox с ошибкой
         }
     }
 }
-
 
 void MainWindow::on_deleteButton_clicked() {
     int currentRow = ui->mainTable->currentRow();
@@ -70,7 +84,6 @@ void MainWindow::on_deleteButton_clicked() {
         }
     }
 }
-
 
 void MainWindow::on_copyButton_clicked()
 {
@@ -92,7 +105,6 @@ void MainWindow::on_copyButton_clicked()
     }
 
     ui->statusbar->showMessage("Пароль скопирован. Очистка через 15 сек.", 5000);
-
 }
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
@@ -106,4 +118,3 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
         ui->mainTable->setRowHidden(i, !match);
     }
 }
-

@@ -30,14 +30,17 @@ private slots:
     void on_choosePathButton_clicked();
     void on_confirmButton_clicked();
     void on_backButton_clicked();
+    void on_dbNameField_textChanged(const QString &arg1);
 
 private:
     Ui::LoginDialog *ui;
 
     QString selectedPath;
+    QString selectedDirectory;
     StartupMode mode;
 
     void updateAuthPageTexts();
+    void updateCreatePathPreview();
     bool validateForm();
 };
 
