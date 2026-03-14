@@ -1,0 +1,91 @@
+QWidget {
+    background-color: #121826;
+    color: #e5ecff;
+    font-family: "Segoe UI", "Inter", sans-serif;
+    font-size: 14px;
+}
+
+QDialog, QMainWindow {
+    background-color: #121826;
+}
+
+QLabel#appTitleLabel {
+    font-size: 24px;
+    font-weight: 700;
+    color: #88b3ff;
+    margin-bottom: 6px;
+}
+
+QLabel#choiceTitleLabel, QLabel#authTitleLabel {
+    font-size: 18px;
+    font-weight: 600;
+    color: #f4f7ff;
+}
+
+QLabel#choiceDescLabel, QLabel#passwordRulesLabel, QLabel#pathValueLabel {
+    color: #a8b7d8;
+}
+
+QLineEdit, QSpinBox, QTableWidget {
+    background-color: #1a2336;
+    border: 1px solid #2d3a56;
+    border-radius: 8px;
+    padding: 8px;
+    color: #f4f7ff;
+    selection-background-color: #3d7dff;
+}
+
+QLineEdit:focus, QSpinBox:focus {
+    border: 1px solid #4a8cff;
+}
+
+QPushButton {
+    background-color: #2b62d9;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-weight: 600;
+}
+
+QPushButton:hover {
+    background-color: #3f76ea;
+}
+
+QPushButton:pressed {
+    background-color: #224faa;
+}
+
+QPushButton#backButton {
+    background-color: #2a3245;
+    color: #d6def5;
+}
+
+QPushButton#backButton:hover {
+    background-color: #39455f;
+}
+
+QHeaderView::section {
+    background-color: #1f2940;
+    color: #dbe4ff;
+    border: none;
+    padding: 7px;
+    font-weight: 600;
+}
+
+QTableWidget {
+    gridline-color: #2c3856;
+}
+
+QTableWidget::item {
+    padding: 6px;
+}
+
+QTableWidget::item:selected {
+    background-color: #355ea8;
+}
+
+QStatusBar {
+    background-color: #111827;
+    color: #9fb0d5;
+}
