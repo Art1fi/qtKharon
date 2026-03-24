@@ -16,12 +16,13 @@ public:
     explicit addEntryDialog(QWidget *parent = nullptr);
     ~addEntryDialog();
     DatabaseManager::PasswordEntry getEntryData() const;
-    QString generatePassword(int length, bool useSymbols);
 
 private slots:
     void on_saveButton_clicked();
 
     void on_genButton_clicked();
+
+    void on_dateButton_clicked();
 
 private:
     Ui::addEntryDialog *ui;

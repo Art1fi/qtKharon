@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>283</width>
-    <height>270</height>
+    <height>275</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -255,7 +255,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QCheckBox" name="dateBox">
+    <widget class="QPushButton" name="dateButton">
      <property name="text">
       <string>Добавить дату (заметки)</string>
      </property>

@@ -1,5 +1,6 @@
 #include "modifydialog.h"
 #include "ui_modifydialog.h"
+#include "databasemanager.h"
 
 modifyDialog::modifyDialog(QWidget *parent)
     : QDialog(parent)
@@ -15,6 +16,37 @@ modifyDialog::~modifyDialog()
 
 void modifyDialog::on_genModButton_clicked()
 {
+    int length = ui->passwordLengthMod->value();
+    bool useSymbols = false;
+    if (ui->symbolsMod->isChecked()) {
+        useSymbols = true;
+    }
+    QString password = DatabaseManager::generatePassword(length, useSymbols);
+    ui->passwordModify->setText(password);
+}
 
+void modifyDialog::setEntryData(const DatabaseManager::PasswordEntry &entry) {
+    m_id = entry.id; // Сохраняем ID для будущего UPDATE
+    ui->nameModify->setText(entry.title);
+    ui->loginModify->setText(entry.login);
+    ui->passwordModify->setText(entry.password);
+    ui->urlModify->setText(entry.url);
+    ui->notesModify->setText(entry.notes);
+}
+
+DatabaseManager::PasswordEntry modifyDialog::getEntryData() const {
+    DatabaseManager::PasswordEntry entry;
+    entry.id = m_id; // Возвращаем тот же ID
+    entry.title = ui->nameModify->text();
+    entry.login = ui->loginModify->text();
+    entry.password = ui->passwordModify->text();
+    entry.url = ui->urlModify->text();
+    entry.notes = ui->notesModify->text();
+    return entry;
+}
+
+void modifyDialog::on_saveModButton_clicked()
+{
+    accept();
 }
 

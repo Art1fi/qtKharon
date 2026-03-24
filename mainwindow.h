@@ -29,6 +29,8 @@ private slots:
 
     void on_searchBar_textChanged(const QString &arg1);
 
+    void on_modifyButton_clicked();
+
 private:
     QList<DatabaseManager::PasswordEntry> list;
     Ui::MainWindow *ui;

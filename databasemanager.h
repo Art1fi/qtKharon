@@ -23,10 +23,12 @@ public:
     };
 
     bool addEntry(const PasswordEntry &entry);
+    bool updateEntry(const PasswordEntry &entry);
     bool openDatabase(const QString &path, const QString &password);
     QList<PasswordEntry> getAllEntries();
     bool deleteEntry(int id);
     void closeDatabase();
+    static QString generatePassword(int length, bool useSymbols);
 };
 
 #endif // DATABASEMANAGER_H

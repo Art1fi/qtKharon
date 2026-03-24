@@ -2,6 +2,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 #include <QDebug>
+#include <random>
 
 DatabaseManager::DatabaseManager() {}
 
@@ -89,4 +90,49 @@ bool DatabaseManager::deleteEntry(int id) {
     query.bindValue(":id", id);
 
     return query.exec();
+}
+
+QString DatabaseManager::generatePassword(int length, bool useSymbols) {
+    QString possibleChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    QString password;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+
+
+    if(useSymbols) possibleChars += "!@#$%^&*()+-=";
+    std::uniform_int_distribution<> dist(0, possibleChars.size()-1);
+    for(int i {}; i < length; i++) {
+        int random_number = dist(gen);
+        password += possibleChars[random_number];
+    }
+
+    return password;
+}
+
+bool DatabaseManager::updateEntry(const DatabaseManager::PasswordEntry &entry) {
+    QSqlQuery query;
+
+    // Используем SQL оператор UPDATE.
+    // Мы ищем запись по id и обновляем все остальные поля.
+    query.prepare("UPDATE passwords SET "
+                  "title = :title, "
+                  "login = :login, "
+                  "password = :password, "
+                  "url = :url, "
+                  "notes = :notes "
+                  "WHERE id = :id");
+
+    query.bindValue(":title", entry.title);
+    query.bindValue(":login", entry.login);
+    query.bindValue(":password", entry.password);
+    query.bindValue(":url", entry.url);
+    query.bindValue(":notes", entry.notes);
+    query.bindValue(":id", entry.id); // Критически важно для поиска нужной записи
+
+    if (!query.exec()) {
+        qDebug() << "Ошибка обновления записи:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
 }

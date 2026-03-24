@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "addentrydialog.h"
+#include "modifydialog.h"
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -118,3 +119,28 @@ void MainWindow::on_searchBar_textChanged(const QString &arg1)
         ui->mainTable->setRowHidden(i, !match);
     }
 }
+
+void MainWindow::on_modifyButton_clicked()
+{
+    int currentRow = ui->mainTable->currentRow();
+    if (currentRow < 0 ) return;
+    int id = ui->mainTable->item(currentRow, 5)->text().toInt();
+    QList<DatabaseManager::PasswordEntry> list = db->getAllEntries();
+    for (auto &e : list) {
+        if (e.id == id ) {
+            modifyDialog dialog(this);
+            dialog.setEntryData(e);
+            if (dialog.exec() == QDialog::Accepted) {
+                DatabaseManager::PasswordEntry newEntry = dialog.getEntryData();
+
+                if (db->updateEntry(newEntry)) {
+                    refreshTable();
+                }
+            } else {
+                QMessageBox::critical(this, "Ошибка", "Не удалось обновить данные в базе.");
+            }
+            break;
+        }
+    }
+}
+
