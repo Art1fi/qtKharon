@@ -2,6 +2,7 @@
 #include "ui_addentrydialog.h"
 #include "databasemanager.h"
 #include <random>
+#include <QDateTime>
 
 addEntryDialog::addEntryDialog(QWidget *parent)
     : QDialog(parent)
@@ -22,6 +23,9 @@ void addEntryDialog::on_saveButton_clicked()
 }
 
 DatabaseManager::PasswordEntry addEntryDialog::getEntryData() const {
+    if(ui->dateBox->isChecked()) {
+        ui->noteInput->setText(QDateTime::currentDateTime().toString("yyyy-MM-dd hh:mm:ss"));
+    }
     DatabaseManager::PasswordEntry entry;
     entry.title = ui->titleInput->text(); // Проверь имена объектов в дизайнере!
     entry.login = ui->loginInput->text();

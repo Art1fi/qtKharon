@@ -45,7 +45,7 @@
       <item>
        <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -122,9 +122,22 @@
        </widget>
       </item>
       <item>
+       <widget class="QPushButton" name="modifyButton">
+        <property name="minimumSize">
+         <size>
+          <width>160</width>
+          <height>38</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Изменить</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <spacer name="horizontalSpacer_2">
         <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+         <enum>Qt::Orientation::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
@@ -142,7 +155,7 @@
        <bool>true</bool>
       </property>
       <property name="selectionBehavior">
-       <enum>QAbstractItemView::SelectRows</enum>
+       <enum>QAbstractItemView::SelectionBehavior::SelectRows</enum>
       </property>
       <property name="showGrid">
        <bool>false</bool>
@@ -199,7 +212,7 @@
      <x>0</x>
      <y>0</y>
      <width>980</width>
-     <height>26</height>
+     <height>17</height>
     </rect>
    </property>
   </widget>

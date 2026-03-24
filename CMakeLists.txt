@@ -27,6 +27,7 @@ if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
         databasemanager.h databasemanager.cpp
         logindialog.h logindialog.cpp logindialog.ui
         addentrydialog.h addentrydialog.cpp addentrydialog.ui
+        modifydialog.h modifydialog.cpp modifydialog.ui
     )
 # Define target properties for Android with Qt 6 as:
 #    set_property(TARGET Kharon APPEND PROPERTY QT_ANDROID_PACKAGE_SOURCE_DIR

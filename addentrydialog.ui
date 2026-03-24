@@ -255,6 +255,13 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="dateBox">
+     <property name="text">
+      <string>Добавить дату (заметки)</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="QPushButton" name="saveButton">
      <property name="text">
       <string>Сохранить</string>

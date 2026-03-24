@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QFile styleFile(":/styles/app.qss");
+    QFile styleFile(":/styles/styles/app.qss");
     if (styleFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
         QTextStream stream(&styleFile);
         a.setStyleSheet(stream.readAll());
