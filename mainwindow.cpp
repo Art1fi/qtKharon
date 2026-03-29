@@ -132,7 +132,7 @@ void MainWindow::on_modifyButton_clicked()
     for (auto &e : list) {
         if (e.id == id ) {
             modifyDialog dialog(this);
-            dialog.setEntryData(e);
+            dialog.setEntryData(e, db);
             if (dialog.exec() == QDialog::Accepted) {
                 DatabaseManager::PasswordEntry newEntry = dialog.getEntryData();
 
@@ -151,8 +151,10 @@ void MainWindow::refreshCategories() {
     ui->categoryListWidget->clear();
     ui->categoryListWidget->addItem("Все записи");
 
-    QStringList cats = db->getCategories();
-    ui->categoryListWidget->addItems(cats);
+    QList<DatabaseManager::Category> cats = db->getCategories();
+    for (const auto &cat : cats) {
+        ui->categoryListWidget->addItem(cat.name);
+    }
 }
 
 void MainWindow::on_addCategoryButton_clicked()

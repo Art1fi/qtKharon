@@ -24,6 +24,7 @@ public:
         QString url;
         QString notes;
         int category_id;
+        QString category;
     };
 
     bool addEntry(const PasswordEntry &entry);

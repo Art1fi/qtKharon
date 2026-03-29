@@ -48,7 +48,7 @@ bool DatabaseManager::openDatabase(const QString &path, const QString &password)
         return false;
     }
     // Попробуем прочитать что-то из таблицы, чтобы проверить пароль
-    if (!query.exec("SELECT count(*) FROM passwords")) {
+    if (!query.exec("SELECT count(*) FROM sqlite_master")) {
         qDebug() << "Ошибка: Скорее всего, введен неверный пароль!";
         main.close();
         return false;
@@ -80,7 +80,15 @@ QList<DatabaseManager::PasswordEntry> DatabaseManager::getAllEntries() {
     QList<DatabaseManager::PasswordEntry> list;
     QSqlQuery query;
 
-    query.exec("SELECT * FROM passwords");
+    QString sql = "SELECT p.*, c.name AS category_name "
+                  "FROM passwords p "
+                  "LEFT JOIN categories c ON p.category_id = c.id";
+
+    if (!query.exec(sql)) {
+        qDebug() << "Ошибка выполнения запроса:" << query.lastError().text();
+        return list;
+    }
+
     while(query.next()) {
         DatabaseManager::PasswordEntry entry;
         entry.id = query.value("id").toInt();
@@ -89,7 +97,9 @@ QList<DatabaseManager::PasswordEntry> DatabaseManager::getAllEntries() {
         entry.url = query.value("url").toString();
         entry.notes = query.value("notes").toString();
         entry.title = query.value("title").toString();
-        entry.category = query.value("category").toString();
+        entry.category_id = query.value("category_id").toInt();
+
+        entry.category = query.value("category_name").toString();
 
         list.append(entry);
     }
@@ -126,14 +136,13 @@ QString DatabaseManager::generatePassword(int length, bool useSymbols) {
 bool DatabaseManager::updateEntry(const DatabaseManager::PasswordEntry &entry) {
     QSqlQuery query;
 
-    // Используем SQL оператор UPDATE.
-    // Мы ищем запись по id и обновляем все остальные поля.
     query.prepare("UPDATE passwords SET "
                   "title = :title, "
                   "login = :login, "
                   "password = :password, "
                   "url = :url, "
-                  "notes = :notes "
+                  "notes = :notes, "
+                  "category_id = :category_id "
                   "WHERE id = :id");
 
     query.bindValue(":title", entry.title);
@@ -141,7 +150,8 @@ bool DatabaseManager::updateEntry(const DatabaseManager::PasswordEntry &entry) {
     query.bindValue(":password", entry.password);
     query.bindValue(":url", entry.url);
     query.bindValue(":notes", entry.notes);
-    query.bindValue(":id", entry.id); // Критически важно для поиска нужной записи
+    query.bindValue(":category_id", entry.category_id);
+    query.bindValue(":id", entry.id);
 
     if (!query.exec()) {
         qDebug() << "Ошибка обновления записи:" << query.lastError().text();

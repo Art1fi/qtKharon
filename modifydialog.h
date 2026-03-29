@@ -15,7 +15,7 @@ class modifyDialog : public QDialog
 public:
     explicit modifyDialog(QWidget *parent = nullptr);
     ~modifyDialog();
-    void setEntryData(const DatabaseManager::PasswordEntry &entry);
+    void setEntryData(const DatabaseManager::PasswordEntry &entry, DatabaseManager *db);
     DatabaseManager::PasswordEntry getEntryData() const;
 
 private slots:

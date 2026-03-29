@@ -25,14 +25,25 @@ void modifyDialog::on_genModButton_clicked()
     ui->passwordModify->setText(password);
 }
 
-void modifyDialog::setEntryData(const DatabaseManager::PasswordEntry &entry) {
+void modifyDialog::setEntryData(const DatabaseManager::PasswordEntry &entry, DatabaseManager *db) {
     m_id = entry.id;
     ui->nameModify->setText(entry.title);
     ui->loginModify->setText(entry.login);
     ui->passwordModify->setText(entry.password);
     ui->urlModify->setText(entry.url);
     ui->notesModify->setText(entry.notes);
-    ui->categorySelect->setCurrentText(entry.category);
+
+    ui->categorySelect->clear();
+    QList<DatabaseManager::Category> cats = db->getCategories();
+
+    for (const auto &cat : cats) {
+        ui->categorySelect->addItem(cat.name, cat.id);
+    }
+
+    int index = ui->categorySelect->findData(entry.category_id);
+    if (index != -1) {
+        ui->categorySelect->setCurrentIndex(index);
+    }
 }
 
 DatabaseManager::PasswordEntry modifyDialog::getEntryData() const {
@@ -43,7 +54,7 @@ DatabaseManager::PasswordEntry modifyDialog::getEntryData() const {
     entry.password = ui->passwordModify->text();
     entry.url = ui->urlModify->text();
     entry.notes = ui->notesModify->text();
-    entry.category = ui->categorySelect->currentText();
+    entry.category_id = ui->categorySelect->currentData().toInt();
     return entry;
 }
 
