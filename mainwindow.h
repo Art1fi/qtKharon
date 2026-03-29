@@ -20,6 +20,8 @@ public:
 
     void refreshTable();
 
+    void refreshCategories();
+
 private slots:
     void on_addButton_clicked();
 
@@ -30,6 +32,10 @@ private slots:
     void on_searchBar_textChanged(const QString &arg1);
 
     void on_modifyButton_clicked();
+
+    void on_addCategoryButton_clicked();
+
+    void on_categoryListWidget_currentRowChanged(int currentRow);
 
 private:
     QList<DatabaseManager::PasswordEntry> list;

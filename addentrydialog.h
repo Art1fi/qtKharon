@@ -13,7 +13,7 @@ class addEntryDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit addEntryDialog(QWidget *parent = nullptr);
+    explicit addEntryDialog(QList<DatabaseManager::Category> cats, QWidget *parent = nullptr);
     ~addEntryDialog();
     DatabaseManager::PasswordEntry getEntryData() const;
 

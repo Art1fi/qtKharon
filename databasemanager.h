@@ -12,7 +12,10 @@ private:
 public:
 
     DatabaseManager();
-
+    struct Category {
+        int id;
+        QString name;
+    };
     struct PasswordEntry {
         int id;
         QString title;
@@ -20,6 +23,7 @@ public:
         QString password;
         QString url;
         QString notes;
+        int category_id;
     };
 
     bool addEntry(const PasswordEntry &entry);
@@ -29,6 +33,8 @@ public:
     bool deleteEntry(int id);
     void closeDatabase();
     static QString generatePassword(int length, bool useSymbols);
+    QList<Category> getCategories();
+    bool addCategory(QString &name);
 };
 
 #endif // DATABASEMANAGER_H

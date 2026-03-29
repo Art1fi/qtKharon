@@ -3,11 +3,14 @@
 #include "databasemanager.h"
 #include <QDateTime>
 
-addEntryDialog::addEntryDialog(QWidget *parent)
+addEntryDialog::addEntryDialog(QList<DatabaseManager::Category> cats, QWidget *parent)
     : QDialog(parent)
     , ui(new Ui::addEntryDialog)
 {
     ui->setupUi(this);
+    for (const auto &cat : cats) {
+        ui->categorySelectAdd->addItem(cat.name, cat.id);
+    }
 
 }
 
@@ -29,6 +32,7 @@ DatabaseManager::PasswordEntry addEntryDialog::getEntryData() const {
     entry.password = ui->passwordInput->text();
     entry.url = ui->urlInput->text();
     entry.notes = ui->noteInput->text();
+    entry.category_id = ui->categorySelectAdd->currentData().toInt();
     return entry;
 }
 

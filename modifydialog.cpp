@@ -26,22 +26,24 @@ void modifyDialog::on_genModButton_clicked()
 }
 
 void modifyDialog::setEntryData(const DatabaseManager::PasswordEntry &entry) {
-    m_id = entry.id; // Сохраняем ID для будущего UPDATE
+    m_id = entry.id;
     ui->nameModify->setText(entry.title);
     ui->loginModify->setText(entry.login);
     ui->passwordModify->setText(entry.password);
     ui->urlModify->setText(entry.url);
     ui->notesModify->setText(entry.notes);
+    ui->categorySelect->setCurrentText(entry.category);
 }
 
 DatabaseManager::PasswordEntry modifyDialog::getEntryData() const {
     DatabaseManager::PasswordEntry entry;
-    entry.id = m_id; // Возвращаем тот же ID
+    entry.id = m_id;
     entry.title = ui->nameModify->text();
     entry.login = ui->loginModify->text();
     entry.password = ui->passwordModify->text();
     entry.url = ui->urlModify->text();
     entry.notes = ui->notesModify->text();
+    entry.category = ui->categorySelect->currentText();
     return entry;
 }
 

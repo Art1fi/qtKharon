@@ -9,6 +9,7 @@
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QTimer>
+#include <QInputDialog>
 
 MainWindow::MainWindow(DatabaseManager *dbManager, QWidget *parent)
     : QMainWindow(parent)
@@ -31,6 +32,7 @@ MainWindow::MainWindow(DatabaseManager *dbManager, QWidget *parent)
     ui->mainTable->verticalHeader()->setDefaultSectionSize(38);
 
     refreshTable();
+    refreshCategories();
 }
 
 MainWindow::~MainWindow()
@@ -53,13 +55,14 @@ void MainWindow::refreshTable() {
         ui->mainTable->setItem(row, 3, new QTableWidgetItem(e.url));
         ui->mainTable->setItem(row, 4, new QTableWidgetItem(e.notes));
         ui->mainTable->setItem(row, 5, new QTableWidgetItem(QString::number(e.id)));
+        ui->mainTable->setItem(row, 6, new QTableWidgetItem(e.category));
         row++;
     }
 }
 
 void MainWindow::on_addButton_clicked()
 {
-    addEntryDialog dialog(this);
+    addEntryDialog dialog(db->getCategories(), this);
 
     if (dialog.exec() == QDialog::Accepted) {
         DatabaseManager::PasswordEntry newEntry = dialog.getEntryData();
@@ -141,6 +144,42 @@ void MainWindow::on_modifyButton_clicked()
             }
             break;
         }
+    }
+}
+
+void MainWindow::refreshCategories() {
+    ui->categoryListWidget->clear();
+    ui->categoryListWidget->addItem("Все записи");
+
+    QStringList cats = db->getCategories();
+    ui->categoryListWidget->addItems(cats);
+}
+
+void MainWindow::on_addCategoryButton_clicked()
+{
+    bool ok;
+    QString name = QInputDialog::getText(this, "Новая папка",
+                                         "Введите название категории:",
+                                         QLineEdit::Normal, "", &ok);
+
+    if (ok && !name.isEmpty()) {
+        if (db->addCategory(name)) {
+            refreshCategories();
+        } else {
+            QMessageBox::warning(this, "Ошибка", "Такая категория уже существует!");
+        }
+    }
+}
+
+
+void MainWindow::on_categoryListWidget_currentRowChanged(int currentRow)
+{
+    QString currentCat = ui->categoryListWidget->item(currentRow)->text();
+    for (int i {}; i < ui->mainTable->rowCount(); ++i) {
+        QString rowCat = ui->mainTable->item(i, 6)->text();
+
+        bool show = (currentCat == "Все записи" || rowCat == currentCat);
+        ui->mainTable->setRowHidden(i, !show);
     }
 }
 
