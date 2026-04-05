@@ -6,6 +6,7 @@
 #include <QFileInfo>
 #include <QMessageBox>
 #include <QRegularExpression>
+#include "databasemanager.h"
 
 LoginDialog::LoginDialog(QWidget *parent)
     : QDialog(parent)
@@ -96,6 +97,9 @@ void LoginDialog::on_dbNameField_textChanged(const QString &arg1)
 
 QString LoginDialog::getPassword() const
 {
+    if (ui->useHash->isChecked()) {
+        return DatabaseManager::hashPassword(ui->passwordField->text());
+    }
     return ui->passwordField->text();
 }
 

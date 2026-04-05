@@ -3,6 +3,7 @@
 #include <QtSql/QSqlError>
 #include <QDebug>
 #include <random>
+#include <QCryptographicHash>
 
 DatabaseManager::DatabaseManager() {}
 
@@ -174,7 +175,7 @@ QList<DatabaseManager::Category> DatabaseManager::getCategories() {
     return list;
 }
 
-bool DatabaseManager::addCategory(QString &name) {
+bool DatabaseManager::addCategory(const QString &name) {
     if (name.isEmpty()) return false;
 
     QSqlQuery query;
@@ -186,4 +187,12 @@ bool DatabaseManager::addCategory(QString &name) {
         return false;
     }
     return true;
+}
+
+QString DatabaseManager::hashPassword(const QString &password) {
+    QByteArray data = password.toUtf8();
+
+    QByteArray hash = QCryptographicHash::hash(data, QCryptographicHash::Sha256);
+
+    return hash.toHex();
 }

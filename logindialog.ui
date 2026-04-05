@@ -210,6 +210,13 @@
         </widget>
        </item>
        <item>
+        <widget class="QCheckBox" name="useHash">
+         <property name="text">
+          <string>Использовать хеширование (нажмите, если использовали при создании)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <layout class="QHBoxLayout" name="authButtonsLayout">
          <item>
           <widget class="QPushButton" name="backButton">

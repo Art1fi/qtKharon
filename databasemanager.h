@@ -35,7 +35,8 @@ public:
     void closeDatabase();
     static QString generatePassword(int length, bool useSymbols);
     QList<Category> getCategories();
-    bool addCategory(QString &name);
+    bool addCategory(const QString &name);
+    static QString hashPassword(const QString &password);
 };
 
 #endif // DATABASEMANAGER_H

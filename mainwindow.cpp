@@ -113,10 +113,12 @@ void MainWindow::on_copyButton_clicked()
 
 void MainWindow::on_searchBar_textChanged(const QString &arg1)
 {
+    QString currentCat = ui->categoryListWidget->item(ui->categoryListWidget->currentRow())->text();
     for (int i = 0; i < ui->mainTable->rowCount(); ++i) {
+        QString rowCat = ui->mainTable->item(i, 6)->text();
         bool match = false;
-        if (ui->mainTable->item(i, 0)->text().contains(arg1, Qt::CaseInsensitive) ||
-            ui->mainTable->item(i, 1)->text().contains(arg1, Qt::CaseInsensitive)) {
+        if (ui->mainTable->item(i, 0)->text().contains(arg1, Qt::CaseInsensitive) && currentCat == rowCat ||
+            ui->mainTable->item(i, 1)->text().contains(arg1, Qt::CaseInsensitive) && currentCat == rowCat) {
             match = true;
         }
         ui->mainTable->setRowHidden(i, !match);
@@ -176,6 +178,9 @@ void MainWindow::on_addCategoryButton_clicked()
 
 void MainWindow::on_categoryListWidget_currentRowChanged(int currentRow)
 {
+    if (currentRow < 0) {
+        return;
+    }
     QString currentCat = ui->categoryListWidget->item(currentRow)->text();
     for (int i {}; i < ui->mainTable->rowCount(); ++i) {
         QString rowCat = ui->mainTable->item(i, 6)->text();
