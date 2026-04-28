@@ -2,7 +2,14 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QPointer>
+
 #include "databasemanager.h"
+
+class QGraphicsOpacityEffect;
+class QLabel;
+class QParallelAnimationGroup;
+class QWidget;
 
 QT_BEGIN_NAMESPACE
 namespace Ui {
@@ -38,8 +45,15 @@ private slots:
     void on_categoryListWidget_currentRowChanged(int currentRow);
 
 private:
-    QList<DatabaseManager::PasswordEntry> list;
+    void applyFilters();
+    void setupSorting();
+    void setupIntroAnimation();
+    void startContentFadeIn();
+
     Ui::MainWindow *ui;
     DatabaseManager *db;
+    QPointer<QWidget> introOverlay;
+    QPointer<QLabel> gifPlaceholderLabel;
+    QList<QPointer<QWidget>> animatableWidgets;
 };
 #endif // MAINWINDOW_H
