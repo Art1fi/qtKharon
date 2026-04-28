@@ -117,6 +117,7 @@ void LoginDialog::updateAuthPageTexts()
 {
     if (mode == StartupMode::OpenExisting) {
         ui->authTitleLabel->setText("Открытие существующей базы");
+        ui->useHash->setText("Использовать хеширование (нажмите, если использовали при создании)");
         ui->pathHintLabel->setText("Файл базы данных:");
         ui->choosePathButton->setText("Выбрать файл");
         ui->passwordHintLabel->setText("Введите пароль:");
@@ -128,6 +129,7 @@ void LoginDialog::updateAuthPageTexts()
     }
 
     ui->authTitleLabel->setText("Создание новой базы");
+    ui->useHash->setText("Использовать хеширование");
     ui->pathHintLabel->setText("Папка для базы:");
     ui->choosePathButton->setText("Выбрать папку");
     ui->passwordHintLabel->setText("Придумайте пароль:");

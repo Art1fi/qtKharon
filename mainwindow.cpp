@@ -24,6 +24,7 @@ MainWindow::MainWindow(DatabaseManager *dbManager, QWidget *parent)
     , db(dbManager)
 {
     ui->setupUi(this);
+    this->setAttribute(Qt::WA_TranslucentBackground, false);
 
     ui->mainTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->mainTable->setSelectionBehavior(QAbstractItemView::SelectRows);
@@ -113,19 +114,13 @@ void MainWindow::setupIntroAnimation()
     auto *overlayLayout = new QVBoxLayout(introOverlay);
     overlayLayout->setContentsMargins(24, 24, 24, 24);
 
-    auto *welcomeLabel = new QLabel("Добро пожаловать в Kharon", introOverlay);
+    auto *welcomeLabel = new QLabel("Добро пожаловать", introOverlay);
     welcomeLabel->setObjectName("welcomeLabel");
     welcomeLabel->setAlignment(Qt::AlignHCenter | Qt::AlignBottom);
-
-    gifPlaceholderLabel = new QLabel("GIF placeholder\n(загрузите сюда вашу анимацию)", introOverlay);
-    gifPlaceholderLabel->setObjectName("gifPlaceholderLabel");
-    gifPlaceholderLabel->setAlignment(Qt::AlignCenter);
-    gifPlaceholderLabel->setMinimumHeight(220);
 
     overlayLayout->addStretch();
     overlayLayout->addWidget(welcomeLabel);
     overlayLayout->addSpacing(18);
-    overlayLayout->addWidget(gifPlaceholderLabel);
     overlayLayout->addStretch();
 
     introOverlay->raise();
@@ -163,6 +158,7 @@ void MainWindow::setupIntroAnimation()
         fadeOverlay->setDuration(700);
         fadeOverlay->setStartValue(1.0);
         fadeOverlay->setEndValue(0.0);
+        fadeOverlay->setEasingCurve(QEasingCurve::InCubic);
 
         connect(fadeOverlay, &QPropertyAnimation::finished, this, [this]() {
             if (introOverlay) {
@@ -186,9 +182,19 @@ void MainWindow::startContentFadeIn()
         if (!widget || !widget->graphicsEffect()) {
             continue;
         }
+        auto *moveAnim = new QPropertyAnimation(widget, "pos", group);
+        QPoint endPos = widget->pos();
+        QPoint startPos = endPos + QPoint(0, 20);
 
+        moveAnim->setDuration(500);
+        moveAnim->setStartValue(startPos);
+        moveAnim->setEndValue(endPos);
+        moveAnim->setEasingCurve(QEasingCurve::OutBack);
+
+        group->addAnimation(moveAnim);
         auto *anim = new QPropertyAnimation(widget->graphicsEffect(), "opacity", group);
-        anim->setDuration(320 + idx * delayStep);
+        anim->setEasingCurve(QEasingCurve::OutCubic);
+        anim->setDuration(160 + idx * delayStep);
         anim->setStartValue(0.0);
         anim->setEndValue(1.0);
         group->addAnimation(anim);
@@ -323,4 +329,11 @@ void MainWindow::on_categoryListWidget_currentRowChanged(int currentRow)
     }
 
     applyFilters();
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event) {
+    QMainWindow::resizeEvent(event);
+    if (introOverlay) {
+        introOverlay->setGeometry(ui->centralwidget->rect());
+    }
 }

@@ -55,5 +55,8 @@ private:
     QPointer<QWidget> introOverlay;
     QPointer<QLabel> gifPlaceholderLabel;
     QList<QPointer<QWidget>> animatableWidgets;
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 };
 #endif // MAINWINDOW_H
