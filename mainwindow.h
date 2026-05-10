@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QPointer>
+#include <QString>
 
 #include "databasemanager.h"
 
@@ -43,18 +44,22 @@ private slots:
     void on_addCategoryButton_clicked();
 
     void on_categoryListWidget_currentRowChanged(int currentRow);
+    void on_themeToggleButton_clicked();
 
 private:
     void applyFilters();
     void setupSorting();
     void setupIntroAnimation();
     void startContentFadeIn();
+    void applyTheme(bool darkTheme);
+    QString loadStyleSheet(const QString &resourcePath) const;
 
     Ui::MainWindow *ui;
     DatabaseManager *db;
     QPointer<QWidget> introOverlay;
     QPointer<QLabel> gifPlaceholderLabel;
     QList<QPointer<QWidget>> animatableWidgets;
+    bool isDarkTheme = false;
 
 protected:
     void resizeEvent(QResizeEvent *event) override;

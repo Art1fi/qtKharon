@@ -13,7 +13,9 @@
 #include <QMessageBox>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
+#include <QFile>
 #include <QTableWidgetItem>
+#include <QTextStream>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <utility>
@@ -35,13 +37,25 @@ MainWindow::MainWindow(DatabaseManager *dbManager, QWidget *parent)
     ui->mainTable->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
     ui->mainTable->horizontalHeader()->setSectionResizeMode(1, QHeaderView::ResizeToContents);
     ui->mainTable->horizontalHeader()->setSectionResizeMode(2, QHeaderView::ResizeToContents);
-    ui->mainTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Stretch);
+    ui->mainTable->horizontalHeader()->setSectionResizeMode(3, QHeaderView::Interactive);
     ui->mainTable->horizontalHeader()->setSectionResizeMode(4, QHeaderView::Stretch);
+    ui->mainTable->horizontalHeader()->setMinimumSectionSize(90);
+    ui->mainTable->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    ui->mainTable->horizontalHeader()->setSectionsClickable(true);
+    ui->mainTable->setWordWrap(false);
+    ui->mainTable->setTextElideMode(Qt::ElideRight);
+    ui->mainTable->setHorizontalScrollMode(QAbstractItemView::ScrollPerPixel);
+    ui->mainTable->setVerticalScrollMode(QAbstractItemView::ScrollPerPixel);
     ui->mainTable->verticalHeader()->setDefaultSectionSize(38);
+    ui->mainTable->setColumnWidth(0, 170);
+    ui->mainTable->setColumnWidth(1, 150);
+    ui->mainTable->setColumnWidth(2, 125);
+    ui->mainTable->setColumnWidth(3, 220);
 
     setupSorting();
     refreshCategories();
     setupIntroAnimation();
+    applyTheme(false);
 }
 
 MainWindow::~MainWindow()
@@ -93,13 +107,22 @@ void MainWindow::applyFilters()
     const QString currentCat = currentItem ? currentItem->text() : QStringLiteral("Все записи");
 
     for (int i = 0; i < ui->mainTable->rowCount(); ++i) {
-        const QString rowCat = ui->mainTable->item(i, 6)->text();
+        auto *siteItem = ui->mainTable->item(i, 0);
+        auto *loginItem = ui->mainTable->item(i, 1);
+        auto *urlItem = ui->mainTable->item(i, 3);
+        auto *catItem = ui->mainTable->item(i, 6);
+        if (!siteItem || !loginItem || !urlItem || !catItem) {
+            ui->mainTable->setRowHidden(i, true);
+            continue;
+        }
+
+        const QString rowCat = catItem->text();
         const bool categoryMatch = (currentCat == "Все записи" || rowCat == currentCat);
 
         const bool searchMatch = search.isEmpty()
-                                 || ui->mainTable->item(i, 0)->text().contains(search, Qt::CaseInsensitive)
-                                 || ui->mainTable->item(i, 1)->text().contains(search, Qt::CaseInsensitive)
-                                 || ui->mainTable->item(i, 3)->text().contains(search, Qt::CaseInsensitive);
+                                 || siteItem->text().contains(search, Qt::CaseInsensitive)
+                                 || loginItem->text().contains(search, Qt::CaseInsensitive)
+                                 || urlItem->text().contains(search, Qt::CaseInsensitive);
 
         ui->mainTable->setRowHidden(i, !(categoryMatch && searchMatch));
     }
@@ -336,4 +359,32 @@ void MainWindow::resizeEvent(QResizeEvent *event) {
     if (introOverlay) {
         introOverlay->setGeometry(ui->centralwidget->rect());
     }
+}
+
+QString MainWindow::loadStyleSheet(const QString &resourcePath) const
+{
+    QFile styleFile(resourcePath);
+    if (!styleFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        return {};
+    }
+
+    QTextStream stream(&styleFile);
+    return stream.readAll();
+}
+
+void MainWindow::applyTheme(bool darkTheme)
+{
+    const QString stylePath = darkTheme ? QStringLiteral(":/styles/styles/dark.qss")
+                                        : QStringLiteral(":/styles/styles/app.qss");
+    const QString styleSheet = loadStyleSheet(stylePath);
+    if (!styleSheet.isEmpty()) {
+        qApp->setStyleSheet(styleSheet);
+        isDarkTheme = darkTheme;
+        ui->themeToggleButton->setText(isDarkTheme ? "Светлая тема" : "Тёмная тема");
+    }
+}
+
+void MainWindow::on_themeToggleButton_clicked()
+{
+    applyTheme(!isDarkTheme);
 }

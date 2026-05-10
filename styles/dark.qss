@@ -1,0 +1,63 @@
+QWidget {
+    background-color: #0f1525;
+    color: #e9edf8;
+    font-family: "Segoe UI", "Inter", sans-serif;
+    font-size: 14px;
+}
+
+QDialog, QMainWindow { background-color: #0f1525; }
+QLabel#appTitleLabel { font-size: 24px; font-weight: 700; color: #f4f7ff; margin-bottom: 6px; }
+QLabel#titleLabel { font-size: 22px; font-weight: 700; color: #f4f7ff; }
+QLabel#choiceTitleLabel, QLabel#authTitleLabel { font-size: 18px; font-weight: 600; color: #edf2ff; }
+QLabel#choiceDescLabel, QLabel#passwordRulesLabel, QLabel#pathValueLabel, QLabel#searchLabel { color: #9fb0d8; }
+QLabel#welcomeLabel { font-size: 30px; font-weight: 700; color: #f4f7ff; }
+QWidget#introOverlay { background-color: #0c1221; }
+
+QLineEdit, QSpinBox, QComboBox, QListWidget {
+    background-color: #17213a;
+    border: 1px solid #31436a;
+    border-radius: 8px;
+    padding: 8px;
+    color: #f4f7ff;
+    selection-background-color: #38518a;
+}
+QLineEdit:focus, QSpinBox:focus, QComboBox:focus { border: 1px solid #7a97d8; }
+
+QPushButton {
+    background-color: #1f3056;
+    color: #f5f8ff;
+    border: 1px solid #3f568f;
+    border-radius: 9px;
+    padding: 9px 16px;
+    min-height: 36px;
+    font-weight: 600;
+}
+QPushButton:hover { background-color: #2d4170; }
+QPushButton:pressed { background-color: #182544; }
+
+QTableWidget {
+    background-color: #111a31;
+    border: 1px solid #31436a;
+    color: #f0f5ff;
+    gridline-color: transparent;
+    alternate-background-color: #16213f;
+    selection-background-color: #34508d;
+    selection-color: #ffffff;
+    border-radius: 10px;
+}
+QTableWidget::item { padding: 8px; border-bottom: 1px solid #25365d; }
+QTableWidget::item:selected { background-color: #35518f; }
+
+QHeaderView::section {
+    background-color: #172648;
+    color: #d9e3ff;
+    border: none;
+    border-bottom: 1px solid #31436a;
+    padding: 10px 8px;
+    font-weight: 600;
+}
+QListWidget { border-radius: 10px; }
+QStatusBar::item { border: none; }
+QSpinBox { padding-right: 38px; min-height: 34px; }
+QSpinBox::up-button:hover, QSpinBox::down-button:hover { background: #2e4b84; }
+QStatusBar { background-color: #0c1224; color: #9fb0d8; }
