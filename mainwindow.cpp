@@ -27,6 +27,8 @@ MainWindow::MainWindow(DatabaseManager *dbManager, QWidget *parent)
 {
     ui->setupUi(this);
     this->setAttribute(Qt::WA_TranslucentBackground, false);
+    ui->horizontalLayout->setStretch(0, 0);
+    ui->horizontalLayout->setStretch(1, 1);
 
     ui->mainTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
     ui->mainTable->setSelectionBehavior(QAbstractItemView::SelectRows);

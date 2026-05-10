@@ -265,9 +265,6 @@
       </item>
      </layout>
     </item>
-    <property name="stretch">
-     <string>0,1</string>
-    </property>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
