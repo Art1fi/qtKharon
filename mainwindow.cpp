@@ -2,6 +2,7 @@
 #include "./ui_mainwindow.h"
 #include "addentrydialog.h"
 #include "modifydialog.h"
+#include "editdialog.h"
 
 #include <QAbstractItemView>
 #include <QApplication>
@@ -10,6 +11,8 @@
 #include <QHeaderView>
 #include <QInputDialog>
 #include <QLabel>
+#include <QDesktopServices>
+#include <QUrl>
 #include <QMessageBox>
 #include <QParallelAnimationGroup>
 #include <QPropertyAnimation>
@@ -331,6 +334,51 @@ void MainWindow::on_categoryListWidget_currentRowChanged(int currentRow)
     applyFilters();
 }
 
+
+void MainWindow::on_mainTable_cellClicked(int row, int column)
+{
+    QTableWidgetItem *clickedItem = ui->mainTable->item(row, column);
+    if (!clickedItem) {
+        return;
+    }
+
+    // Колонка 4: редактируем заметки через модальное окно и обновляем БД.
+    if (column == 4) {
+        const QTableWidgetItem *idItem = ui->mainTable->item(row, 5);
+        if (!idItem) {
+            return;
+        }
+
+        EditDialog dialog(clickedItem->text(), this);
+        if (dialog.exec() == QDialog::Accepted) {
+            const QString newNotes = dialog.text();
+
+            QList<DatabaseManager::PasswordEntry> entries = db->getAllEntries();
+            for (auto &entry : entries) {
+                if (entry.id == idItem->text().toInt()) {
+                    entry.notes = newNotes;
+
+                    if (db->updateEntry(entry)) {
+                        clickedItem->setText(newNotes);
+                    }
+                    break;
+                }
+            }
+        }
+
+        return;
+    }
+
+    // Колонка 3: если внутри ячейки есть URL, открываем в браузере по умолчанию.
+    if (column == 3) {
+        const QString text = clickedItem->text().trimmed();
+        const QUrl url = QUrl::fromUserInput(text);
+
+        if (url.isValid() && !url.scheme().isEmpty()) {
+            QDesktopServices::openUrl(url);
+        }
+    }
+}
 void MainWindow::resizeEvent(QResizeEvent *event) {
     QMainWindow::resizeEvent(event);
     if (introOverlay) {

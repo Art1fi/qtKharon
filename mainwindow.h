@@ -44,6 +44,8 @@ private slots:
 
     void on_categoryListWidget_currentRowChanged(int currentRow);
 
+    void on_mainTable_cellClicked(int row, int column);
+
 private:
     void applyFilters();
     void setupSorting();
