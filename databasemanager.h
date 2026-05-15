@@ -37,6 +37,7 @@ public:
     QList<Category> getCategories();
     bool addCategory(const QString &name);
     static QString hashPassword(const QString &password);
+    bool updateEntryNote(const DatabaseManager::PasswordEntry &entry);
 };
 
 #endif // DATABASEMANAGER_H
