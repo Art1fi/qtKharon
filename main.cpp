@@ -20,18 +20,23 @@ int main(int argc, char *argv[])
     DatabaseManager dbManager;
     LoginDialog loginDialog;
 
-    if (loginDialog.exec() != QDialog::Accepted) {
-        return 0;
-    }
+    bool isDbOpened = false;
 
-    const QString password = loginDialog.getPassword();
-    const QString path = loginDialog.getDatabasePath();
+    while (!isDbOpened) {
+        if (loginDialog.exec() != QDialog::Accepted) {
+            return 0;
+        }
 
-    if (!dbManager.openDatabase(path, password)) {
-        QMessageBox::critical(nullptr,
-                              "Ошибка",
-                              "Не удалось открыть базу данных. Проверьте путь и пароль.");
-        return 0;
+        const QString password = loginDialog.getPassword();
+        const QString path = loginDialog.getDatabasePath();
+
+        if (dbManager.openDatabase(path, password)) {
+            isDbOpened = true;
+        } else {
+            QMessageBox::critical(nullptr,
+                                  "Ошибка",
+                                  "Не удалось открыть базу данных. Проверьте путь и пароль.");
+        }
     }
 
     MainWindow window(&dbManager);

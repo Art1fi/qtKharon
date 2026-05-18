@@ -162,6 +162,24 @@ bool DatabaseManager::updateEntry(const DatabaseManager::PasswordEntry &entry) {
     return true;
 }
 
+bool DatabaseManager::updateEntryNote(const DatabaseManager::PasswordEntry &entry) {
+    QSqlQuery query;
+
+    query.prepare("UPDATE passwords SET "
+                  "notes = :notes "
+                  "WHERE id = :id");
+
+    query.bindValue(":notes", entry.notes);
+    query.bindValue(":id", entry.id);
+
+    if (!query.exec()) {
+        qDebug() << "Ошибка обновления записи:" << query.lastError().text();
+        return false;
+    }
+
+    return true;
+}
+
 QList<DatabaseManager::Category> DatabaseManager::getCategories() {
     QList<Category> list;
     QSqlQuery query("SELECT id, name FROM categories ORDER BY name ASC");
